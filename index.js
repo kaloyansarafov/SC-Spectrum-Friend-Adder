@@ -10,7 +10,7 @@ const headers = {
     'cookie': process.env.COOKIE
 }
 
-let usernameList = fs.readFileSync('input.txt', 'utf8').split(' ');
+const usernameList = fs.readFileSync('input.txt', 'utf8').split(' ');
 
 async function getUserId(username) {
     let user;
@@ -18,7 +18,7 @@ async function getUserId(username) {
         "nickname": username
     }
 
-//finding ID
+    //finding ID
     await axios.post('https://robertsspaceindustries.com/api/spectrum/member/info/nickname',
         data, {headers: headers}
     ).then(function (response) {
@@ -37,7 +37,7 @@ async function addUserAsFriend(userid) {
     let data = {
         "member_id": userid.toString()
     }
-    let resp
+    let resp;
 
     await axios.post('https://robertsspaceindustries.com/api/spectrum/friend-request/create',
         data, {headers: headers}
@@ -47,7 +47,6 @@ async function addUserAsFriend(userid) {
     }).catch(function (error) {
         console.log(error);
     });
-
     return resp;
 }
 
@@ -55,7 +54,9 @@ const sleep = ms => new Promise(res => setTimeout(res, ms));
 
 (async () => {
     fs.writeFile('results.txt', '', function () {console.log('beginning to write')})
+
     for (let i = 0; i < usernameList.length; i++) {
+
         let userId = await getUserId(usernameList[i]);
         if (userId == undefined || userId == "") {
             console.log(`User ${usernameList[i]} not found, must be added manually`);
@@ -66,6 +67,7 @@ const sleep = ms => new Promise(res => setTimeout(res, ms));
             })
         }
         console.log(userId);
+
         let result = await addUserAsFriend(userId);
 
         if (result.code !== "OK"){
@@ -75,7 +77,6 @@ const sleep = ms => new Promise(res => setTimeout(res, ms));
                 }
             })
         } else {
-
             fs.writeFile('results.txt', usernameList[i] + ' - Added successfully' + '\n', {flag: 'a'}, function (err) {
                 if (err) {
                     return console.error(err);
