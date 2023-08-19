@@ -54,6 +54,7 @@ async function addUserAsFriend(userid) {
 const sleep = ms => new Promise(res => setTimeout(res, ms));
 
 (async () => {
+    fs.writeFile('results.txt', '', function () {console.log('beginning to write')})
     for (let i = 0; i < usernameList.length; i++) {
         let userId = await getUserId(usernameList[i]);
         if (userId == undefined || userId == "") {
